@@ -7,3 +7,8 @@
 # Static files #
 ################
 /staticfiles/
+
+# pychache #
+############
+/__pycache__/
+__pycache__
