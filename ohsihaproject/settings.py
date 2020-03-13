@@ -125,4 +125,5 @@ STATIC_URL = '/static/'
 django_heroku.settings(locals())
 
 # Where to redirect when user logs in
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
