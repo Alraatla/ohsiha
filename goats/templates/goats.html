@@ -1,11 +1,15 @@
 {% extends 'base.html' %}
 
-{% block title %}Home{% endblock %}
+{% block title %}All Goats{% endblock %}
 
 {% block content %}
 {% if user.is_authenticated %}
   Hi {{ user.username }}!
-  <p><a href="/goats/">See your goats</a></p>
+  <h1>Here are your goats:</h1>
+  {% for goat in goats %}
+      <img src="http://placegoat.com/200/200">
+      <li> {{ goat.name }} </li>
+  {% endfor %}
   <p><a href="{% url 'logout' %}">logout</a></p>
 {% else %}
   <p>You are not logged in</p>

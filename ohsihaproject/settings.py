@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ['ohsiha-project.herokuapp.com']
 # Application definition
 
 INSTALLED_APPS = [
+    'goats.apps.GoatsConfig',
     'accounts.apps.AccountsConfig',
     'apiapp.apps.ApiappConfig',
     'django.contrib.admin',
