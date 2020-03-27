@@ -7,9 +7,11 @@
   Hi {{ user.username }}!
   <h1>Here are your goats:</h1>
   {% for goat in goats %}
-      <img src="http://placegoat.com/200/200">
+      <img src="http://placegoat.com/200/20{{ goat.id }}">
       <li> {{ goat.name }} </li>
   {% endfor %}
+  <p><a href="{% url 'create_goat' %}">Add a goat</a></p>
+
   <p><a href="{% url 'logout' %}">logout</a></p>
 {% else %}
   <p>You are not logged in</p>
