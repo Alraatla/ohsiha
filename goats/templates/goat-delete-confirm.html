@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}New/update goat{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+  <form method="post">
+    {% csrf_token %}
+    <h2>Are you sure you want to remove little ol' {{ goat.name }}?</h2>
+    <img src="http://placegoat.com/200/20{{ goat.id }}"><br>
+    <button type="submit">Confirm</button>
+  </form>
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">login</a>
+  <br>
+  <a href="{% url 'signup' %}">register</a>
+{% endif %}
+{% endblock %}
