@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+  Hi {{ user.username }}!
+  <p>Your location seems to be {{ geodata.city }}, {{ geodata.country }}.</p>
+  <h3>Here is your weather data for 5 days:</h3>
+  {% for hourlydata in weather_data %}
+  <div class="card" style="width: 30rem;">
+
+      <h6>Time:</h6> <p>{{ hourlydata.time }}</p>
+
+      <h6>It is:</h6> <p>{{ hourlydata.weather_str }}</p>
+
+      <h6>Temperature:</h6> <p>{{ hourlydata.temp }} celsius</p>
+      <h6>Feels like:</h6> <p>{{ hourlydata.feels_like }} celsius</p>
+      <h6>Wind:</h6> <p>{{ hourlydata.wind }} m/s</p>
+
+  </div>
+  {% endfor %}
+  <p><a href="{% url 'logout' %}">logout</a></p>
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">login</a>
+  <br>
+  <a href="{% url 'signup' %}">register</a>
+{% endif %}
+{% endblock %}

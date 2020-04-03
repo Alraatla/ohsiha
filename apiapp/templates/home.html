@@ -6,6 +6,7 @@
 {% if user.is_authenticated %}
   Hi {{ user.username }}!
   <p><a href="/goats/">See your goats</a></p>
+  <p><a href="/weather">weather</a></p>
   <p><a href="{% url 'logout' %}">logout</a></p>
 {% else %}
   <p>You are not logged in</p>
