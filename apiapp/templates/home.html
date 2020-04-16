@@ -11,8 +11,140 @@
     </div>
   </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/data.js"></script>
+<script src="https://code.highcharts.com/modules/series-label.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+<!-- Additional files for the Highslide popup effect -->
+<script src="https://www.highcharts.com/media/com_demo/js/highslide-full.min.js"></script>
+<script src="https://www.highcharts.com/media/com_demo/js/highslide.config.js" charset="utf-8"></script>
+<link rel="stylesheet" type="text/css" href="https://www.highcharts.com/media/com_demo/css/highslide.css" />
+
+<figure class="highcharts-figure">
+<!--  <div id="container"></div>-->
+  <p class="highcharts-description">
+    Chart showing data loaded dynamically. The individual data points can
+    be clicked to display more information.
+  </p>
+</figure>
+<!--  <script>-->
+<!--    Highcharts.chart('container', {-->
+
+<!--    chart: {-->
+<!--        scrollablePlotArea: {-->
+<!--            minWidth: 700-->
+<!--        }-->
+<!--    },-->
+
+<!--    data: {-->
+<!--        columns: [-->
+<!--          [null, '10/12/17 12:00:00', '11/12/17 12:00:00' , '12/12/17 12:00:00'],-->
+<!--          ["Yes","41000","44000","43200"],-->
+<!--          ["No","31000","33000","21200"],-->
+<!--          ["Maybe","0","33000","60000"]-->
+<!--        ]-->
+<!--    },-->
+
+<!--    title: {-->
+<!--        text: 'Daily sessions at www.highcharts.com'-->
+<!--    },-->
+
+<!--    subtitle: {-->
+<!--        text: 'Source: Google Analytics'-->
+<!--    },-->
+
+<!--    xAxis: {-->
+<!--        tickInterval: 7 * 24 * 3600 * 1000, // one week-->
+<!--        tickWidth: 0,-->
+<!--        gridLineWidth: 1,-->
+<!--        labels: {-->
+<!--            align: 'left',-->
+<!--            x: 3,-->
+<!--            y: -3-->
+<!--        }-->
+<!--    },-->
+
+<!--    yAxis: [{ // left y axis-->
+<!--        title: {-->
+<!--            text: 'Goat danger meter'-->
+<!--        },-->
+<!--        labels: {-->
+<!--            align: 'left',-->
+<!--            x: 3,-->
+<!--            y: 16,-->
+<!--            format: '{value:.,0f}'-->
+<!--        },-->
+<!--        showFirstLabel: false-->
+<!--    }, { // right y axis-->
+<!--        linkedTo: 0,-->
+<!--        gridLineWidth: 0,-->
+<!--        opposite: true,-->
+<!--        title: {-->
+<!--            text: 'Goat danger meter'-->
+<!--        },-->
+<!--        labels: {-->
+<!--            align: 'right',-->
+<!--            x: -3,-->
+<!--            y: 16,-->
+<!--            format: '{value:.,0f}'-->
+<!--        },-->
+<!--        showFirstLabel: false-->
+<!--    }],-->
+
+<!--    legend: {-->
+<!--        align: 'left',-->
+<!--        verticalAlign: 'top',-->
+<!--        borderWidth: 0-->
+<!--    },-->
+
+<!--    tooltip: {-->
+<!--        shared: true,-->
+<!--        crosshairs: true-->
+<!--    },-->
+
+<!--    plotOptions: {-->
+<!--        series: {-->
+<!--            cursor: 'pointer',-->
+<!--            point: {-->
+<!--                events: {-->
+<!--                    click: function (e) {-->
+<!--                        hs.htmlExpand(null, {-->
+<!--                            pageOrigin: {-->
+<!--                                x: e.pageX || e.clientX,-->
+<!--                                y: e.pageY || e.clientY-->
+<!--                            },-->
+<!--                            headingText: this.series.name,-->
+<!--                            maincontentText: Highcharts.dateFormat('%A, %b %e, %Y', this.x) + ':<br/> ' +-->
+<!--                                this.y + ' Your goat is freezing! <a href="{% url 'list_goats' %}">Go put it inside</a>',-->
+<!--                            width: 200-->
+<!--                        });-->
+<!--                    }-->
+<!--                }-->
+<!--            },-->
+<!--            marker: {-->
+<!--                lineWidth: 1-->
+<!--            }-->
+<!--        }-->
+<!--    },-->
+
+<!--    series: [{-->
+<!--        name: 'All sessions',-->
+<!--        lineWidth: 4,-->
+<!--        marker: {-->
+<!--            radius: 4-->
+<!--        }-->
+<!--    }, {-->
+<!--        name: 'New users'-->
+<!--    }]-->
+<!--  });-->
+<!--  </script>-->
+
   <p><a href="/goats/">See your goats</a></p>
-  <p><a href="/weather">weather</a></p>
+  <p><a href="/chart/">weather</a></p>
 {% else %}
   <div class="row align-self-center">
     <div class="col-20 align-self-center">

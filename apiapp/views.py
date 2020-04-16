@@ -3,6 +3,7 @@ from django.http import HttpResponse
 import datetime
 import requests
 from .models import WeatherDataHourly, GeoData
+from goats.models import Goat, GoatToUser
 from .forms import GeoDataForm
 
 import logging
@@ -10,20 +11,36 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def index(request):
-    now = datetime.datetime.now()
-    html = "<html><body>The time is now %s." % now
-    html += "<br>"
-    html += "</body></html>"
-    return HttpResponse(html)
+def show_chart(request):
+    goats = GoatToUser.objects.filter(owner_id=request.user)
+    weather_data = WeatherDataHourly.objects.filter(geo_data_id=get_user_geodata(request).id)
+    dates = []
+    temps = []
+    for hourly_data in weather_data:
+        temps.append(str(hourly_data.temp))
+        dates.append(change_date(hourly_data.date) + ' ' + hourly_data.time)
+    data = []
+    goats_in_list = []
+    for goat in goats:
+        # if goat.owner_id == request.user.id:
+        goats_in_list.append(goat.goat)
+    goats_in_list[0].cold_protection = 10000
+    for goat in goats_in_list:
+        data_list = []
+        data_list.append(goat)
+        goat_threshold = (-7) + ((goat.cold_protection-4500)/1000)/9
+        for hourly in weather_data:
+            data_list.append(str(int(hourly.temp+goat_threshold)))
+        data.append(data_list)
+
+    return render(request, 'weather_chart.html', {'dates': dates,
+                                                  'data': data,
+                                                  'temps': temps})
 
 
 def list_weather(request):
 
-    if not check_location_data(request):
-        user_geodata = get_user_geodata(request)
-    else:
-        user_geodata = get_old_user_geodata(request)
+    user_geodata = get_user_geodata(request)
 
     weather_data = get_weather_data(user_geodata)
 
@@ -32,7 +49,6 @@ def list_weather(request):
     save_weather_data(user_geodata, weather_data)
 
     data = WeatherDataHourly.objects.filter(geo_data_id=user_geodata.id)
-
 
     return render(request, 'weather.html', {'geodata': user_geodata,
                                             'weather_data': data})
@@ -56,16 +72,20 @@ def save_weather_data(geodata, weather_data):
 
 
 def get_user_geodata(request):
-    response = requests.get('http://api.ipstack.com/check?access_key=8c902a4d5fd93242e3d7f39f731b82bf')
-    geo_data = response.json()
 
-    geodata_entry = GeoData(user_id=request.user.id,
-                            city=geo_data['city'],
-                            country=geo_data['country_code'],
-                            lat=geo_data['latitude'],
-                            lon=geo_data['longitude'])
-    geodata_entry.save()
-    return geodata_entry
+    if check_location_data(request):
+        return get_old_user_geodata(request)
+    else:
+        response = requests.get('http://api.ipstack.com/check?access_key=8c902a4d5fd93242e3d7f39f731b82bf')
+        geo_data = response.json()
+
+        geodata_entry = GeoData(user_id=request.user.id,
+                                city=geo_data['city'],
+                                country=geo_data['country_code'],
+                                lat=geo_data['latitude'],
+                                lon=geo_data['longitude'])
+        geodata_entry.save()
+        return geodata_entry
 
 
 def get_weather_data(user_geodata):
@@ -130,3 +150,9 @@ def parse_time(time):
     date_corrected = day + "." + month + "." + year
 
     return date_corrected, time_parsed
+
+
+def change_date(date):
+    parsed = date.split('.')
+    new_date = parsed[1] + '/' + parsed[0] + '/' + parsed[2][-2:]
+    return new_date
