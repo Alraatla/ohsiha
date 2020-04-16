@@ -10,8 +10,9 @@
 
 # pychache #
 ############
-/__pycache__/
-__pycache__
+/__pycache__/*
+__pycache__/
 *.pyc
 *sqlite3
 .idea/
+*.cpython-38.pyc
