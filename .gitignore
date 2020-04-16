@@ -16,3 +16,4 @@ __pycache__/
 *sqlite3
 .idea/
 *.cpython-38.pyc
+/temp

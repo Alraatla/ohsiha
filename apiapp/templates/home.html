@@ -4,14 +4,27 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-  Hi {{ user.username }}!
+<div class="col align-self-center">
+  <div class="card bg-success">
+    <div class="card-body text-center">
+      <p class="card-text">Hi {{ user.username }}!</p>
+    </div>
+  </div>
+</div>
   <p><a href="/goats/">See your goats</a></p>
   <p><a href="/weather">weather</a></p>
-  <p><a href="{% url 'logout' %}">logout</a></p>
 {% else %}
-  <p>You are not logged in</p>
-  <a href="{% url 'login' %}">login</a>
-  <br>
-  <a href="{% url 'signup' %}">register</a>
+  <div class="row align-self-center">
+    <div class="col-20 align-self-center">
+      <div class="card bg-warning mx-auto">
+        <div class="card-body text-center">
+          <p class="card-text">You are not logged in</p>
+          <a class="card-link" href="{% url 'login' %}">Login</a>
+          <a class="card-link" href="{% url 'signup' %}">Register</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
 {% endif %}
 {% endblock %}

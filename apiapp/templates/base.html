@@ -16,24 +16,31 @@
   <p>OhSiHa harjoitustyö</p>
 </div>
 <div class="container-fluid">
-    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-      <a class="navbar-brand" href="/">Home</a>
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark ml-5 mr-5">
+      <a class="navbar-brand ml-5" href="/">Home</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="collapsibleNavbar">
-        <ul class="navbar-nav">
+        <ul class="navbar-nav mr-auto ml-5">
           <li class="nav-item">
             <a class="nav-link" href="/goats">Goats</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/weather">Weather</a>
           </li>
+        </ul>
+        {% if user.is_authenticated %}
+        <ul class="navbar-nav mr-5">
+          <li class="nav-item">
+            <p class="nav-text text-white my-2 mx-2">Logged in as {{ user.username }}</p>
+          </li>
           <li class="nav-item">
             <a class="nav-link" href="/accounts/logout">Log out</a>
           </li>
 
         </ul>
+        {% endif %}
       </div>
     </nav>
 </div>
