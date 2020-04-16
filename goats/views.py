@@ -5,6 +5,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 def list_goats(request):
 
     logger.error(request.user)
@@ -20,6 +21,7 @@ def list_goats(request):
     # goats.delete()
     return render(request, 'goats.html', {'goats': goats_in_list})
 
+
 def create_goat(request):
     form = GoatForm(request.POST or None)
 
@@ -33,6 +35,7 @@ def create_goat(request):
 
     return render(request, 'goats-form.html', {'form': form})
 
+
 def update_goat(request, id):
     goat = Goat.objects.get(id=id)
     form = GoatForm(request.POST or None, instance=goat)
@@ -43,6 +46,7 @@ def update_goat(request, id):
 
     return render(request, 'goats-form.html', {'form': form, 'goat': goat})
 
+
 def delete_goat(request, id):
     goat = Goat.objects.get(id=id)
 
@@ -52,4 +56,14 @@ def delete_goat(request, id):
 
     return render(request, 'goat-delete-confirm.html', {'goat': goat})
 
-# Create your views here.
+
+def update_goat_is_inside(request, id):
+    goat = Goat.objects.get(id=id)
+
+    if goat.is_inside:
+        goat.is_inside = False
+    else:
+        goat.is_inside = True
+
+    goat.save()
+    return redirect('list_goats')

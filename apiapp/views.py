@@ -1,12 +1,14 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 import datetime
 import requests
 from .models import WeatherDataHourly, GeoData
+from .forms import GeoDataForm
 
 import logging
 
 logger = logging.getLogger(__name__)
+
 
 def index(request):
     now = datetime.datetime.now()
@@ -31,7 +33,6 @@ def list_weather(request):
 
     data = WeatherDataHourly.objects.filter(geo_data_id=user_geodata.id)
 
-    logger.error(data)
 
     return render(request, 'weather.html', {'geodata': user_geodata,
                                             'weather_data': data})
@@ -42,12 +43,15 @@ def save_weather_data(geodata, weather_data):
     for data in weather_data['list']:
         temp_c = data['main']['temp'] - 273.15
         feels_like_c = data['main']['feels_like'] - 273.15
+        date, time = parse_time(data['dt_txt'])
         entry = WeatherDataHourly(geo_data_id=geodata.id,
-                                  time=data['dt_txt'],
+                                  date=date,
+                                  time=time,
                                   temp=temp_c,
                                   feels_like=feels_like_c,
                                   weather_str=data['weather'][0]['description'],
-                                  wind=data['wind']['speed'])
+                                  wind=data['wind']['speed'],
+                                  icon=data['weather'][0]['icon'])
         entry.save()
 
 
@@ -57,7 +61,7 @@ def get_user_geodata(request):
 
     geodata_entry = GeoData(user_id=request.user.id,
                             city=geo_data['city'],
-                            country=geo_data['country_name'],
+                            country=geo_data['country_code'],
                             lat=geo_data['latitude'],
                             lon=geo_data['longitude'])
     geodata_entry.save()
@@ -83,3 +87,46 @@ def check_location_data(request):
         return False
     return True
 
+
+def update_location(request):
+    geo_data = GeoData.objects.get(user_id=request.user.id)
+    form = GeoDataForm(request.POST or None, instance=geo_data)
+
+    if form.is_valid():
+        old_city = geo_data.city
+        old_country = geo_data.country
+        form.save()
+        message = update_lon_lat(geo_data)
+        if not message:
+            return redirect('list_weather')
+        else:
+            geo_data.city = old_city
+            geo_data.country = old_country
+            geo_data.save()
+            return render(request, 'geo_data-form.html', {'form': form, 'msg': message})
+    return render(request, 'geo_data-form.html', {'form': form})
+
+
+def update_lon_lat(geo_data):
+    request_url = 'http://api.openweathermap.org/data/2.5/forecast?q=' + geo_data.city + ',' + str(geo_data.country.code) + \
+        '&appid=0aaa134f5c8dec6649a74fb386d02270'
+    response = requests.get(request_url).json()
+    if response['cod'] == "200":
+        geo_data.lat = response['city']['coord']['lat']
+        geo_data.lon = response['city']['coord']['lon']
+        geo_data.save()
+
+    return response['message']
+
+
+def parse_time(time):
+    date_time = time.split(' ')
+    date = date_time[0]
+    time_parsed = date_time[1]
+    year_month_day = date.split('-')
+    year = year_month_day[0]
+    month = year_month_day[1]
+    day = year_month_day [2]
+    date_corrected = day + "." + month + "." + year
+
+    return date_corrected, time_parsed

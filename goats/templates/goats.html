@@ -6,14 +6,29 @@
 {% if user.is_authenticated %}
   Hi {{ user.username }}!
   <h1>Here are your goats:</h1>
+  <div class="card-deck">
   {% for goat in goats %}
-      <img src="http://placegoat.com/200/20{{ goat.id }}">
-      <a href="{% url 'update_goat' goat.id %}">
-        <li>Name: {{ goat.name }} </li>
-      </a>
-        <li>Age: {{ goat.age }} </li>
-        <li>Breed: {{ goat.breed }}</li>
+    <div class="card text-center">
+      <img class="card-img-top" src="http://placegoat.com/200/20{{ goat.id }}">
+      <div class="card-body">
+        <h4 class="card-title">{{ goat.name }}</h4>
+        <p class="card-text">Age: {{ goat.age }}</p>
+        <p class="card-text">Breed: {{ goat.breed }}</p>
+        {% if goat.is_inside %}
+        <p class="card-text">This goat is inside</p>
+        <a class="card-text" href="{% url 'update_goat_is_inside' goat.id %}">Let them roam free!</a>
+        {% else %}
+        <p class="card-text">This goat is outside</p>
+        <a class="card-text" href="{% url 'update_goat_is_inside' goat.id %}">Put them inside!</a>
+        <br>
+        {% endif %}
+
+        <a class="card-link" href="{% url 'update_goat' goat.id %}">Update Goat</a>
+      </div>
+    </div>
+
   {% endfor %}
+  </div>
   <p><a href="{% url 'create_goat' %}">Add a goat</a></p>
 
   <p><a href="{% url 'logout' %}">logout</a></p>

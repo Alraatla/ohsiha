@@ -5,22 +5,32 @@
 {% block content %}
 {% if user.is_authenticated %}
   Hi {{ user.username }}!
-  <p>Your location seems to be {{ geodata.city }}, {{ geodata.country }}.</p>
+  <p>Your location is set to {{ geodata.city }}, {{ geodata.country.name }}. </p>
+  <a href="{% url 'update_location' %}">Update location</a>
   <h3>Here is your weather data for 5 days:</h3>
+<div class="row my-3">
   {% for hourlydata in weather_data %}
-  <div class="card" style="width: 30rem;">
+      <div class="card mx-auto px-3 py-3 my-3" style="width:250px">
+          <div class="card-header">
+              <img class="card-img" src="http://openweathermap.org/img/w/{{ hourlydata.icon }}.png">
+              <h4 class="card-title">{{ hourlydata.temp }} °C</h4>
+          </div>
+          <div class="card-body">
+              <p class="card-text">Feels like: {{ hourlydata.feels_like }} °C</p>
+              <p class="card-text">Weather: {{ hourlydata.weather_str }}</p>
+              <p class="card-text">Wind: {{ hourlydata.wind }} m/s</p>
+          </div>
+          <div class="card-footer">
+              <p class="card-text">Date: {{ hourlydata.date }}</p>
+              <p class="card-text">Time: {{ hourlydata.time }}</p>
+<!--              <p class="card-text">Temperature: {{ hourlydata.temp }} celsius</p>-->
+          </div>
 
-      <h6>Time:</h6> <p>{{ hourlydata.time }}</p>
+      </div>
 
-      <h6>It is:</h6> <p>{{ hourlydata.weather_str }}</p>
-
-      <h6>Temperature:</h6> <p>{{ hourlydata.temp }} celsius</p>
-      <h6>Feels like:</h6> <p>{{ hourlydata.feels_like }} celsius</p>
-      <h6>Wind:</h6> <p>{{ hourlydata.wind }} m/s</p>
-
-  </div>
   {% endfor %}
-  <p><a href="{% url 'logout' %}">logout</a></p>
+</div>
+
 {% else %}
   <p>You are not logged in</p>
   <a href="{% url 'login' %}">login</a>
