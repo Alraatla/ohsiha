@@ -4,7 +4,6 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-  Hi {{ user.username }}!
   <h1>Here are your goats:</h1>
   <div class="card-deck">
   {% for goat in goats %}
@@ -31,11 +30,17 @@
   </div>
   <p><a href="{% url 'create_goat' %}">Add a goat</a></p>
 
-  <p><a href="{% url 'logout' %}">logout</a></p>
 {% else %}
-  <p>You are not logged in</p>
-  <a href="{% url 'login' %}">login</a>
-  <br>
-  <a href="{% url 'signup' %}">register</a>
+  <div class="row align-self-center">
+    <div class="col-20 align-self-center">
+      <div class="card bg-warning mx-auto">
+        <div class="card-body text-center">
+          <p class="card-text">You are not logged in</p>
+          <a class="card-link" href="{% url 'login' %}">Login</a>
+          <a class="card-link" href="{% url 'signup' %}">Register</a>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endif %}
 {% endblock %}

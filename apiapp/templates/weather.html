@@ -4,7 +4,6 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-  Hi {{ user.username }}!
   <p>Your location is set to {{ geodata.city }}, {{ geodata.country.name }}. </p>
   <a href="{% url 'update_location' %}">Update location</a>
   <h3>Here is your weather data for 5 days:</h3>
@@ -23,11 +22,8 @@
           <div class="card-footer">
               <p class="card-text">Date: {{ hourlydata.date }}</p>
               <p class="card-text">Time: {{ hourlydata.time }}</p>
-<!--              <p class="card-text">Temperature: {{ hourlydata.temp }} celsius</p>-->
           </div>
-
       </div>
-
   {% endfor %}
 </div>
 

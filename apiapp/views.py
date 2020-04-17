@@ -3,7 +3,7 @@ from django.http import HttpResponse
 import datetime
 import requests
 from .models import WeatherDataHourly, GeoData
-from goats.models import Goat, GoatToUser
+from goats.models import GoatToUser
 from .forms import GeoDataForm
 
 import logging
@@ -14,23 +14,30 @@ logger = logging.getLogger(__name__)
 def show_chart(request):
     goats = GoatToUser.objects.filter(owner_id=request.user)
     weather_data = WeatherDataHourly.objects.filter(geo_data_id=get_user_geodata(request).id)
+    # Lista päivämäärille
     dates = []
+
+    # Lista lämpötiloille
     temps = []
+
+    # Lisätään päivämäärät ja kellonajat listaan
     for hourly_data in weather_data:
         temps.append(str(hourly_data.temp))
         dates.append(change_date(hourly_data.date) + ' ' + hourly_data.time)
     data = []
     goats_in_list = []
     for goat in goats:
-        # if goat.owner_id == request.user.id:
         goats_in_list.append(goat.goat)
-    goats_in_list[0].cold_protection = 10000
+
     for goat in goats_in_list:
-        data_list = []
-        data_list.append(goat)
-        goat_threshold = (-7) + ((goat.cold_protection-4500)/1000)/9
+        data_list = [goat]
+        goat_threshold = (-7) + ((goat.cold_protection-4500)/1000)/9 - int(goat.age / 10)
         for hourly in weather_data:
-            data_list.append(str(int(hourly.temp+goat_threshold)))
+            if goat.is_inside:
+                data_list.append(str(18))
+            else:
+                data_list.append(str(int(hourly.temp + goat_threshold - int(hourly.wind / 3))))
+
         data.append(data_list)
 
     return render(request, 'weather_chart.html', {'dates': dates,

@@ -22,15 +22,19 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="collapsibleNavbar">
+        {% if user.is_authenticated %}
         <ul class="navbar-nav mr-auto ml-5">
           <li class="nav-item">
             <a class="nav-link" href="/goats">Goats</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/weather">Weather</a>
+            <a class="nav-link" href="/weather">Weather data</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/chart">Weather-goat chart</a>
           </li>
         </ul>
-        {% if user.is_authenticated %}
+
         <ul class="navbar-nav mr-5">
           <li class="nav-item">
             <p class="nav-text text-white my-2 mx-2">Logged in as {{ user.username }}</p>

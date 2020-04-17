@@ -1,12 +1,10 @@
 {% extends 'base.html' %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Chart{% endblock %}
 
 {% block content %}
 {% if user.is_authenticated %}
-  Hi {{ user.username }}!
-  <p>Your location is set to {{ geodata.city }}, {{ geodata.country.name }}. </p>
-  <a href="{% url 'update_location' %}">Update location</a>
+  <a href="{% url 'update_location' %}">Update your location</a>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="https://code.highcharts.com/modules/data.js"></script>
@@ -20,13 +18,13 @@
 <script src="https://www.highcharts.com/media/com_demo/js/highslide.config.js" charset="utf-8"></script>
 <link rel="stylesheet" type="text/css" href="https://www.highcharts.com/media/com_demo/css/highslide.css" />
 <figure class="highcharts-figure">
-  <div id="container"></div>
+  <div id="container" style="height: 600px"></div>
   <p class="highcharts-description">
-    Chart showing data loaded dynamically. The individual data points can
-    be clicked to display more information.
+    The individual data points can
+    be clicked to display more information. Goats differ how well they can put up with cold,
+    make sure to check frequently when to put your goats inside! On the graph you will see how cold your goat is feeling.
   </p>
-    <p>{% for entry in data %}[{% for e in entry %}{% if forloop.first %}"{{ e.name }}"{% else %}"{{ e }}"{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}]{% if not forloop.last %}, {% endif %}{% endfor %}</p>
-    <p>[null, {% for date in dates %} '{{ date }}'{% if not forloop.last %}, {% endif %}{% endfor %}]</p>
+
 </figure>
   <script>
     Highcharts.chart('container', {
@@ -42,24 +40,20 @@
         [null, {% for date in dates %} '{{ date }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
         ['Temperatures', {% for temp in temps %} '{{ temp }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
         {% for entry in data %}[{% for e in entry %}{% if forloop.first %}"{{ e.name }}"{% else %}"{{ e }}"{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}]{% if not forloop.last %}, {% endif %}{% endfor %}
-<!--        ["Hessu", "0", "-1", "1", "4", "4", "3", "1", "0", "0", "0", "0", "3", "5", "5", "1", "0", "0", "0", "2", "5", "7", "7", "3", "2", "1", "0", "4", "7", "10", "11", "7", "4", "3", "2", "8", "14", "16", "14", "9", "8"],-->
-<!--        ["Töhnö", "0", "-1", "1", "4", "4", "3", "1", "0", "0", "0", "0", "3", "5", "5", "1", "0", "0", "0", "2", "5", "7", "7", "3", "2", "1", "0", "4", "7", "10", "11", "7", "4", "3", "2", "8", "14", "16", "14", "9", "8"]-->
-
-<!--        {% for entry in data %}[{% for e in entry %}{% if forloop.first %}"{{ e.name }}"{% else %}"{{ e }}"{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}]{% if not forloop.last %}, {% endif %}{% endfor %}-->
 
         ]
     },
 
     title: {
-        text: 'Daily sessions at www.highcharts.com'
+        text: "How are your goats feeling?"
     },
 
     subtitle: {
-        text: 'Source: Google Analytics'
+        text: 'Source: Your goats, your weather data'
     },
 
     xAxis: {
-        tickInterval: 24 * 3600 * 1000, // one week
+        tickInterval: 3 * 3600 * 1000, // one week
         tickWidth: 0,
         gridLineWidth: 1,
         labels: {
@@ -113,14 +107,32 @@
             point: {
                 events: {
                     click: function (e) {
+                        var text = '';
+                        if (this.series.name == 'Temperatures') {
+                            text = 'The temperature is ' + this.y + ' C° <br/>';
+                            if (this.y <= 5) {
+                                text = text + "It's kind of chilly..";
+                            }
+                        } else {
+                            if (this.y <= -7) {
+                                text =  this.series.name + ' is freezing! <a href="/goats/">Go put it inside</a>';
+                            } else if (this.y > -7 && this.y <= 0) {
+                                text =  this.series.name + ' is getting cold! <a href="/goats/">Go put it inside</a>';
+                            } else if (this.y < 10) {
+                                text =  this.series.name + ' is alright.'
+                            } else {
+                                text =  this.series.name + ' is warm! :))'
+                            }
+                        }
+
                         hs.htmlExpand(null, {
                             pageOrigin: {
                                 x: e.pageX || e.clientX,
                                 y: e.pageY || e.clientY
                             },
                             headingText: this.series.name,
-                            maincontentText: Highcharts.dateFormat('%A, %b %e, %Y', this.x) + ':<br/> ' +
-                                this.y + ' Your goat is freezing! <a href="{% url 'list_goats' %}">Go put it inside</a>',
+                            maincontentText: 'On ' + Highcharts.dateFormat('%A, %b %e, %Y', this.x) + ':<br/> ' +
+                                text,
                             width: 200
                         });
                     }

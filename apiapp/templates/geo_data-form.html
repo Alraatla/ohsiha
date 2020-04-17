@@ -5,7 +5,6 @@
 {% block content %}
 {% if user.is_authenticated %}
 
-  Hi {{ user.username }}!
   <h1>Update location</h1>
   <form method="post">
     {% csrf_token %}
